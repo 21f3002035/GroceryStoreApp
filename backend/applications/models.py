@@ -17,6 +17,7 @@ class Users(db.Model):
     status = db.Column(db.String, nullable = False, default = "active") # active, pending
 
     all_carts = db.relationship("Cart", backref = "users", cascade = "all, delete-orphan", lazy = True)
+    all_products = db.relationship("Products", backref = "users", cascade = "all, delete-orphan", lazy = True)
     category_request = db.relationship("CategoryRequest", backref = "users", lazy = True)
 
 class Category(db.Model):
@@ -24,6 +25,15 @@ class Category(db.Model):
     name = db.Column(db.String, nullable = False, unique = True)
 
     all_products = db.relationship("Products", backref = "belong_to", cascade = "all, delete-orphan", lazy = True)
+
+    def __repr__(self):
+        return f'<category {self.name}>'
+    
+    def convert_to_json(self):
+        return {
+            "id" : self.id,
+            "name" : self.name
+        }
 
 class Products(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -35,7 +45,22 @@ class Products(db.Model):
     sold_inventory = db.Column(db.Integer, nullable = False)
 
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable = False)
+    manager_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable = False)
     all_carts = db.relationship("Cart", backref = "products", cascade = "all, delete-orphan", lazy = True)
+
+    def convert_to_json(self):
+        return {
+            "id" : self.id,
+            "name" : self.name,
+            "description" : self.description,
+            "price" : self.price,
+            "unit" : self.unit,
+            "stock" : self.stock,
+            "sold_inventory" : self.sold_inventory,
+            "category_id" : self.category_id,
+            "category_name" : self.category.name
+        }
+
 
 class Cart(db.Model):
     id = db.Column(db.Integer, primary_key = True)
