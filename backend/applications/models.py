@@ -20,6 +20,16 @@ class Users(db.Model):
     all_products = db.relationship("Products", backref = "users", cascade = "all, delete-orphan", lazy = True)
     category_request = db.relationship("CategoryRequest", backref = "users", lazy = True)
 
+    def convert_to_json(self):
+        return {
+            "id" : self.id,
+            "email" : self.email,
+            "password" : self.password,
+            "name" : self.name,
+            "role" : self.role,
+            "status" : self.status
+        }
+
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String, nullable = False, unique = True)
@@ -58,7 +68,7 @@ class Products(db.Model):
             "stock" : self.stock,
             "sold_inventory" : self.sold_inventory,
             "category_id" : self.category_id,
-            "category_name" : self.category.name
+            "category_name" : self.belong_to.name
         }
 
 

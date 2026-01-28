@@ -4,8 +4,9 @@ from applications.models import *
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from applications.api import WelcomeApi
-from applications.auth_api import LoginApi, SignupApi 
+from applications.auth_api import AuthApi, SignupApi 
 from applications.category_api import CategoryApi
+from applications.product_api import ProductApi
 from datetime import timedelta
 
 base_dir = os.path.abspath(os.path.dirname(__file__))
@@ -32,9 +33,10 @@ def add_admin():
         return "Admin Added"
 
 api.add_resource(WelcomeApi, '/api/welcome')
-api.add_resource(LoginApi, '/api/login')
+api.add_resource(AuthApi, '/api/login', '/api/manager/<int:manager_id>', '/api/manager')
 api.add_resource(SignupApi, '/api/signup')
-api.add_resource(CategoryApi, '/api/category','/api/category/<int:category_id>')
+api.add_resource(CategoryApi, '/api/category', '/api/category/<int:category_id>')
+api.add_resource(ProductApi, '/api/product', '/api/product/<int:product_id>')
 
 if __name__ == "__main__":
     db.create_all()

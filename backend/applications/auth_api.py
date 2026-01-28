@@ -4,7 +4,20 @@ from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_requir
 
 from .models import *
 
-class LoginApi(Resource):
+class AuthApi(Resource):
+    @jwt_required()
+    def get(self):
+        current_user = get_jwt()
+        if current_user.get("role") != "admin" :
+            return {"message" : "Access Denied!!!"}, 403
+        
+        managers = Users.query.filter_by(role = "manager").all()
+        manager_json = []
+        for manager in managers:
+            manager_json.append(manager.convert_to_json())
+        return manager_json
+        
+
     def post(self):
         data = request.json
         
@@ -33,7 +46,20 @@ class LoginApi(Resource):
                 "user_name" : user.name,
                 "user_role" : user.role
                 }, 200 # success
-        
+    
+    @jwt_required()
+    def patch(self, manager_id):
+        current_user = get_jwt()
+        if current_user.get("role") != "admin" :
+            return {"message" : "Access Denied!!!"}, 403
+
+        manager = Users.query.filter_by(id = manager_id).first()
+        if not manager:
+            return {'message' : 'Manager not found.'}, 404
+
+        manager.status = 'active'
+        db.session.commit()
+        return {'message':'Manager approved successively'}, 200 
                
         
 class SignupApi(Resource):

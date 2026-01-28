@@ -1,6 +1,6 @@
 from flask import request, current_app as app
 from flask_restful import Resource
-from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, get_jwt
+from flask_jwt_extended import get_jwt_identity, jwt_required, get_jwt
 
 from .models import *
 

@@ -38,9 +38,9 @@ class ProductApi(Resource):
             return {"message":"Category not found!"}, 404
         
         new_product = Products(name = data.get('name').strip(),description = data.get('description').strip(),
-                               price = data.get('price').strip(),unit = data.get('unit').strip(),
-                               stock = data.get('stock').strip(),sold_inventory = 0,
-                               category_id = data.get('category_id').strip(), manager_id = current_user_id)
+                               price = data.get('price'),unit = data.get('unit').strip(),
+                               stock = data.get('stock'),sold_inventory = 0,
+                               category_id = data.get('category_id'), manager_id = current_user_id)
         
         db.session.add(new_product)
         db.session.commit()
@@ -63,9 +63,9 @@ class ProductApi(Resource):
         
         product.name = data.get('name').strip() if data.get("name").strip() else product.name
         product.description = data.get('description').strip() if data.get("description").strip() else product.description
-        product.price = data.get('price').strip() if data.get("price").strip() else product.price
+        product.price = data.get('price') if data.get("price") else product.price
         product.unit = data.get('unit').strip() if data.get("unit").strip() else product.unit
-        product.stock = data.get('stock').strip() if data.get("stock").strip() else product.stock
+        product.stock = data.get('stock') if data.get("stock") else product.stock
        
         db.session.commit()
         
